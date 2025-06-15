@@ -6,7 +6,6 @@ export default function Navbar({ onExport, onToggleDark, isDark, user, onSignOut
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(today);
   const [currentUser, setCurrentUser] = useState(user);
-  const [showMore, setShowMore] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,22 +34,6 @@ export default function Navbar({ onExport, onToggleDark, isDark, user, onSignOut
           Filter
         </button>
         <Link to="/about" className="navbar-link" style={{ color: '#fff', background: '#f43f5e', padding: '6px 18px', borderRadius: 8, fontWeight: 600, textDecoration: 'none' }}>About</Link>
-        <div className="navbar-link" style={{ position: 'relative' }}>
-          <button
-            style={{ color: '#fff', background: '#0ea5e9', padding: '6px 18px', borderRadius: 8, fontWeight: 600, border: 'none', cursor: 'pointer' }}
-            onClick={() => setShowMore((v) => !v)}
-          >
-            More ▾
-          </button>
-          {showMore && (
-            <div style={{ position: 'absolute', top: '110%', left: 0, background: '#fff', color: '#222', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.12)', minWidth: 160, zIndex: 10 }}>
-              <Link to="/profile" style={{ display: 'block', padding: '10px 18px', textDecoration: 'none', color: '#0ea5e9', borderBottom: '1px solid #eee' }} onClick={() => setShowMore(false)}>Profile</Link>
-              <Link to="/settings" style={{ display: 'block', padding: '10px 18px', textDecoration: 'none', color: '#0ea5e9', borderBottom: '1px solid #eee' }} onClick={() => setShowMore(false)}>Settings</Link>
-              <Link to="/help" style={{ display: 'block', padding: '10px 18px', textDecoration: 'none', color: '#0ea5e9', borderBottom: '1px solid #eee' }} onClick={() => setShowMore(false)}>Help</Link>
-              <Link to="/feedback" style={{ display: 'block', padding: '10px 18px', textDecoration: 'none', color: '#0ea5e9' }} onClick={() => setShowMore(false)}>Feedback</Link>
-            </div>
-          )}
-        </div>
         <button className="navbar-link" style={{ color: '#fff', background: isDark ? '#facc15' : '#334155', padding: '6px 18px', borderRadius: 8, fontWeight: 600, border: 'none', cursor: 'pointer' }} onClick={onToggleDark}>
           {isDark ? '☀ Light Mode' : '🌙 Dark Mode'}
         </button>
@@ -60,12 +43,7 @@ export default function Navbar({ onExport, onToggleDark, isDark, user, onSignOut
             <span style={{ color: '#fff', fontWeight: 500 }}>{displayName}</span>
             <button className="navbar-link" style={{ color: '#fff', background: '#ef4444', padding: '6px 12px', borderRadius: 8, fontWeight: 600, border: 'none', cursor: 'pointer' }} onClick={handleSignOut}>Sign Out</button>
           </span>
-        ) : (
-          <>
-            <Link to="/login" className="navbar-link" style={{ color: '#fff', background: '#6366f1', padding: '6px 18px', borderRadius: 8, fontWeight: 600, textDecoration: 'none' }}>Login</Link>
-            <Link to="/register" className="navbar-link" style={{ color: '#fff', background: '#22c55e', padding: '6px 18px', borderRadius: 8, fontWeight: 600, textDecoration: 'none' }}>Register</Link>
-          </>
-        )}
+        ) : null}
         {/* Calendar filter popover */}
         {showCalendar && (
           <input

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function RegisterPage() {
+export default function RegisterPage({ onLogin }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +17,10 @@ export default function RegisterPage() {
       users.push({ name, email, password });
       localStorage.setItem("users", JSON.stringify(users));
       alert("Account created successfully!");
-      navigate("/login");
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("user", JSON.stringify({ name, email, password }));
+      if (onLogin) onLogin();
+      navigate("/dashboard");
     }
   };
 

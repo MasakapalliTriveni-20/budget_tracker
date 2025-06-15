@@ -20,6 +20,12 @@ import Feedback from "./pages/Feedback";
 const isAuthenticated = () => localStorage.getItem("loggedIn") === "true";
 
 function App() {
+  // Remove forced logout for normal login flow
+  // useEffect(() => {
+  //   localStorage.removeItem("loggedIn");
+  //   localStorage.removeItem("user");
+  // }, []);
+
   const [transactions, setTransactions] = useState(() => {
     const saved = localStorage.getItem("transactions");
     return saved ? JSON.parse(saved) : [];
@@ -29,6 +35,21 @@ function App() {
   const [type, setType] = useState("Income");
   const [category, setCategory] = useState("");
   const [dark, setDark] = useState(false);
+  const [auth, setAuth] = useState(isAuthenticated());
+
+  useEffect(() => {
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+  }, [transactions]);
+
+  // Listen for login/logout changes
+  useEffect(() => {
+    const onStorage = () => setAuth(isAuthenticated());
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const handleLogin = () => setAuth(true);
+  const handleLogout = () => setAuth(false);
 
   const income = transactions
     .filter((t) => t.type === "Income")
@@ -37,10 +58,6 @@ function App() {
     .filter((t) => t.type === "Expense")
     .reduce((sum, t) => sum + Number(t.amount), 0);
   const balance = income - expenses;
-
-  useEffect(() => {
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-  }, [transactions]);
 
   const addTransaction = () => {
     if (!title || !amount || !category) return;
@@ -75,99 +92,114 @@ function App() {
 
   return (
     <div className={dark ? "wrapper dark" : "wrapper"}>
-      {isAuthenticated() && <Navbar isDark={dark} onToggleDark={() => setDark(!dark)} />}
-      {isAuthenticated() && (
-        <div className="container">
-          <div className="summary-cards">
-            <div className="card">
-              <h2>Total Income</h2>
-              <p>${income.toFixed(2)}</p>
-            </div>
-            <div className="card">
-              <h2>Total Expenses</h2>
-              <p>${expenses.toFixed(2)}</p>
-            </div>
-            <div className="card">
-              <h2>Balance</h2>
-              <p>${balance.toFixed(2)}</p>
-            </div>
-          </div>
-          <div className="transaction-form">
-            <h2>Add Transaction</h2>
-            <input
-              type="text"
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <input
-              type="number"
-              placeholder="Amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-            <select value={type} onChange={(e) => setType(e.target.value)}>
-              <option value="Income">Income</option>
-              <option value="Expense">Expense</option>
-            </select>
-            <input
-              type="text"
-              placeholder="Category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
-            <button onClick={addTransaction}>
-              <FaPlus /> Add Transaction
-            </button>
-            <button onClick={exportCSV}>
-              <FaFileExport /> Export CSV
-            </button>
-          </div>
-          <div className="transaction-list">
-            <h2>Transaction History</h2>
-            <ul>
-              {transactions.map((t) => (
-                <li key={t.id}>
-                  <span>{t.title}</span>
-                  <span>${t.amount}</span>
-                  <span>{t.type}</span>
-                  <span>{t.category}</span>
-                  <button onClick={() => deleteTransaction(t.id)}>
-                    <FaTrash />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={auth ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/login" element={
+          auth ? <Navigate to="/dashboard" /> : <LoginPage onLogin={handleLogin} />
+        } />
+        <Route path="/register" element={
+          auth ? <Navigate to="/dashboard" /> : <RegisterPage onLogin={handleLogin} />
+        } />
         <Route
           path="/dashboard"
           element={
-            isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />
+            auth ? (
+              <>
+                <Navbar isDark={dark} onToggleDark={() => setDark(!dark)} onSignOut={handleLogout} />
+                <div className="container">
+                  <div className="summary-cards">
+                    <div className="card">
+                      <h2>Total Income</h2>
+                      <p>${income.toFixed(2)}</p>
+                    </div>
+                    <div className="card">
+                      <h2>Total Expenses</h2>
+                      <p>${expenses.toFixed(2)}</p>
+                    </div>
+                    <div className="card">
+                      <h2>Balance</h2>
+                      <p>${balance.toFixed(2)}</p>
+                    </div>
+                  </div>
+                  <div className="transaction-form">
+                    <h2>Add Transaction</h2>
+                    <input
+                      type="text"
+                      placeholder="Title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <input
+                      type="number"
+                      placeholder="Amount"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                    />
+                    <select value={type} onChange={(e) => setType(e.target.value)}>
+                      <option value="Income">Income</option>
+                      <option value="Expense">Expense</option>
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="Category"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    />
+                    <button onClick={addTransaction}>
+                      <FaPlus /> Add Transaction
+                    </button>
+                    <button onClick={exportCSV}>
+                      <FaFileExport /> Export CSV
+                    </button>
+                  </div>
+                  <div className="transaction-list">
+                    <h2>Transaction History</h2>
+                    <ul>
+                      {transactions.map((t) => (
+                        <li key={t.id}>
+                          <span>{t.title}</span>
+                          <span>${t.amount}</span>
+                          <span>{t.type}</span>
+                          <span>{t.category}</span>
+                          <button onClick={() => deleteTransaction(t.id)}>
+                            <FaTrash />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </>
+            ) : <Navigate to="/login" />
           }
         />
         <Route
           path="/spending-log"
           element={
-            isAuthenticated() ? <SpendingLog /> : <Navigate to="/login" />
+            auth ? (
+              <>
+                <Navbar isDark={dark} onToggleDark={() => setDark(!dark)} />
+                <SpendingLog />
+              </>
+            ) : <Navigate to="/login" />
           }
         />
         <Route
           path="/monthly-summary"
           element={
-            isAuthenticated() ? <MonthlySummary /> : <Navigate to="/login" />
+            auth ? (
+              <>
+                <Navbar isDark={dark} onToggleDark={() => setDark(!dark)} />
+                <MonthlySummary />
+              </>
+            ) : <Navigate to="/login" />
           }
         />
-        <Route path="/about" element={<About />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/help" element={<Help />} />
-        <Route path="/feedback" element={<Feedback />} />
+        <Route path="/about" element={auth ? (<><Navbar isDark={dark} onToggleDark={() => setDark(!dark)} /><About /></>) : <Navigate to="/login" />} />
+        <Route path="/profile" element={auth ? (<><Navbar isDark={dark} onToggleDark={() => setDark(!dark)} /><Profile /></>) : <Navigate to="/login" />} />
+        <Route path="/settings" element={auth ? (<><Navbar isDark={dark} onToggleDark={() => setDark(!dark)} /><Settings /></>) : <Navigate to="/login" />} />
+        <Route path="/help" element={auth ? (<><Navbar isDark={dark} onToggleDark={() => setDark(!dark)} /><Help /></>) : <Navigate to="/login" />} />
+        <Route path="/feedback" element={auth ? (<><Navbar isDark={dark} onToggleDark={() => setDark(!dark)} /><Feedback /></>) : <Navigate to="/login" />} />
       </Routes>
     </div>
   );

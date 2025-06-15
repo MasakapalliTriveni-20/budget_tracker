@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function LoginPage() {
+export default function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ export default function LoginPage() {
     if (found) {
       localStorage.setItem("loggedIn", "true");
       localStorage.setItem("user", JSON.stringify(found));
+      if (onLogin) onLogin();
       navigate("/dashboard");
     } else {
       alert("Invalid credentials");

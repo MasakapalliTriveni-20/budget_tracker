@@ -20,12 +20,6 @@ import Feedback from "./pages/Feedback";
 const isAuthenticated = () => localStorage.getItem("loggedIn") === "true";
 
 function App() {
-  // Remove forced logout for normal login flow
-  // useEffect(() => {
-  //   localStorage.removeItem("loggedIn");
-  //   localStorage.removeItem("user");
-  // }, []);
-
   const [transactions, setTransactions] = useState(() => {
     const saved = localStorage.getItem("transactions");
     return saved ? JSON.parse(saved) : [];

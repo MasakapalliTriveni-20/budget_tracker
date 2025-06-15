@@ -1,0 +1,198 @@
+/*
+  This CSS will center the layout, add soft colors, rounded corners, and modern shadows for a clean look.
+  Place in App.css or import into your main entry point.
+*/
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #e0f7fa, #fff);
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h1 {
+  color: #2c3e50;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.summary-cards {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card {
+  flex: 1;
+  margin: 0 10px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.card h3 {
+  margin: 0;
+  font-weight: bold;
+}
+
+.card p {
+  font-size: 18px;
+  color: #00b894;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid #dcdde1;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button.add {
+  background-color: #0984e3;
+}
+
+button.add:hover {
+  background-color: #74b9ff;
+}
+
+button.export {
+  background-color: #00b894;
+}
+
+button.export:hover {
+  background-color: #55efc4;
+}
+
+.app-container.light {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.app-container.dark {
+  background-color: #1e1e1e;
+  color: #f2f2f2;
+}
+
+.dark {
+  background-color: #2d3436;
+  color: #f1f2f6;
+}
+
+.dark .container {
+  background-color: #353b48;
+}
+
+.toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: inherit;
+  margin-left: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transaction-list {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.transaction {
+  background: #ecf0f1;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transaction .delete {
+  background: transparent;
+  border: none;
+  color: #d63031;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.dark .transaction {
+  background: #636e72;
+}
+
+.no-transactions {
+  text-align: center;
+  margin-top: 15px;
+  color: #888;
+}
+
+.main-content {
+  padding-left: 200px;
+  min-height: 100vh;
+}
